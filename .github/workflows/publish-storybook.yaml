@@ -23,9 +23,12 @@ concurrency:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    environment:
+    environment: # GitHub Actions Environment
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    env: # Local Build Environment Variables
+      STORYBOOK_BUILD_PATH: './storybook-static'
+      ARTIFACT_NAME: 'storybook-{{ github.sha }}'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -39,9 +42,12 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          name: 'storybook-{{ github.sha }}'
-          path: './storybook-static'
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.STORYBOOK_BUILD_PATH }}
       
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: ${{ env.ARTIFACT_NAME }}
+          
