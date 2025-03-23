@@ -28,7 +28,7 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     env: # Local Build Environment Variables
       STORYBOOK_BUILD_PATH: './storybook-static'
-      ARTIFACT_NAME: 'storybook-{{ github.sha }}'
+      ARTIFACT_NAME: 'storybook-${{ github.sha }}'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
