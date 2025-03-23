@@ -8,7 +8,6 @@
 		medium: 'p-3',
 		large: 'p-4'
 	};
-
 	$: sizeStyle= configurableStyles[size]; 
   $: configuredClasses = [sizeStyle].join(' ').trim();
 
