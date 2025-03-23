@@ -2,6 +2,9 @@
 name: Publish Storybook
 
 on:
+  push:
+    branches:
+      - main
   # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch: {}
 
@@ -20,35 +23,31 @@ concurrency:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Install dependencies
-        run: npm install
-      - name: Build Storybook
-        run: npm run build-storybook
-      - name: Archive production artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: storybook-static
-          path: ./storybook-static
-
-  # Single deploy job since we're just deploying
-  deploy:
-    environment:
+    environment: # GitHub Actions Environment
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+    env: # Local Build Environment Variables
+      STORYBOOK_BUILD_PATH: './storybook-static'
+      ARTIFACT_NAME: 'storybook-{{ github.sha }}'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Setup Pages
-        uses: actions/configure-pages@v5
+
+      - name: Install dependencies
+        run: npm install
+      
+      - name: Build Storybook
+        run: npm run build-storybook
+      
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload entire repository
-          path: './storybook-static'
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ env.STORYBOOK_BUILD_PATH }}
+      
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        with:
+          artifact_name: ${{ env.ARTIFACT_NAME }}
+          
