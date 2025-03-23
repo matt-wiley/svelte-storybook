@@ -4,7 +4,7 @@
 
 	// More on how to set up stories at: https://storybook.js.org/docs/writing-stories
 	const { Story } = defineMeta({
-		title: 'Example/HorizontalOverflowNav',
+		title: 'Components/HorizontalOverflowNav',
 		component: HorizontalOverflowNav,
 		tags: ['autodocs'],
 		argTypes: {
